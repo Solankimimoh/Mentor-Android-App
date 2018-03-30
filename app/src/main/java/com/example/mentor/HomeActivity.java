@@ -127,10 +127,10 @@ public class HomeActivity extends AppCompatActivity
         arrayList.add(new HomeMenuItemModel(getString(R.string.contactus), R.drawable.vector_location, "#0A9B88"));
 
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, arrayList, this);
-        recyclerView.setAdapter(adapter);
+//        recyclerView.setAdapter(adapter);
 
-        AutoFitGridLayoutManager layoutManager = new AutoFitGridLayoutManager(this, 300);
-        recyclerView.setLayoutManager(layoutManager);
+//        AutoFitGridLayoutManager layoutManager = new AutoFitGridLayoutManager(this, 300);
+//        recyclerView.setLayoutManager(layoutManager);
 
 
     }
@@ -171,10 +171,10 @@ public class HomeActivity extends AppCompatActivity
                 finish();
                 break;
 
-            case R.id.menu_aprove_student:
-                final Intent gotoStudentRequest = new Intent(HomeActivity.this, StudentReuqestListActivity.class);
-                startActivity(gotoStudentRequest);
-                break;
+//            case R.id.menu_aprove_student:
+//                final Intent gotoStudentRequest = new Intent(HomeActivity.this, StudentReuqestListActivity.class);
+//                startActivity(gotoStudentRequest);
+//                break;
             case R.id.menu_send_notification:
                 final Intent gotoSendNotification = new Intent(HomeActivity.this, SendNotificatioActivity.class);
                 startActivity(gotoSendNotification);
