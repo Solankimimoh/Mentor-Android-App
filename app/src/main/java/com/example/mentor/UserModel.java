@@ -4,26 +4,25 @@ package com.example.mentor;
  * Created by solan on 08-03-18.
  */
 
-public class FacultyModel {
+public class UserModel {
     public String fullname;
     public String email;
     public String password;
     public String mobile;
-    public String department;
-    public boolean isActivated;
-    ;
+    public String industry;
+    public boolean isMentor;
 
-    public FacultyModel(String fullname, String email, String password, String mobile, String department, boolean isActivated) {
+
+    public UserModel() {
+    }
+
+    public UserModel(String fullname, String email, String password, String mobile, String industry, boolean isMentor) {
         this.fullname = fullname;
         this.email = email;
         this.password = password;
         this.mobile = mobile;
-        this.department = department;
-        this.isActivated = isActivated;
-    }
-
-
-    public FacultyModel() {
+        this.industry = industry;
+        this.isMentor = isMentor;
     }
 
     public String getFullname() {
@@ -58,11 +57,19 @@ public class FacultyModel {
         this.mobile = mobile;
     }
 
-    public String getDepartment() {
-        return department;
+    public String getIndustry() {
+        return industry;
     }
 
-    public void setDepartment(String department) {
-        this.department = department;
+    public void setIndustry(String industry) {
+        this.industry = industry;
+    }
+
+    public boolean isMentor() {
+        return isMentor;
+    }
+
+    public void setMentor(boolean mentor) {
+        isMentor = mentor;
     }
 }

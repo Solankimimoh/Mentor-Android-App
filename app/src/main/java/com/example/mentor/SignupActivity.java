@@ -31,8 +31,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     private EditText pwdEd;
     private EditText enrollmentEd;
     private EditText mobileEd;
-    private Spinner departmentSp;
-    private Spinner semesterSp;
+    private Spinner industrySp;
     private TextView alreadyRegisteredTv;
     private TextView facultyRegistrationTv;
     private Button signupBtn;
@@ -43,7 +42,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     private String password;
     private String enrollment;
     private String mobile;
-    private String department;
+    private String industry;
     private String semester;
 
     //    Firebase
@@ -75,10 +74,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         fullNameEd = findViewById(R.id.activity_faculty_registration_name_ed);
         emailEd = findViewById(R.id.activity_faculty_registration_email_ed);
         pwdEd = findViewById(R.id.activity_faculty_registration_password_ed);
-        enrollmentEd = findViewById(R.id.activity_signup_enrollment_ed);
         mobileEd = findViewById(R.id.activity_faculty_registration_mobile_ed);
-        departmentSp = findViewById(R.id.activity_faculty_registration_department_spinner);
-        semesterSp = findViewById(R.id.activity_signup_semester_spinner);
+        industrySp = findViewById(R.id.activity_faculty_registration_department_spinner);
 
         alreadyRegisteredTv = findViewById(R.id.activity_signup_already_registered_txt);
         facultyRegistrationTv = findViewById(R.id.activity_signup_faculty_registration_tv);
@@ -93,8 +90,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         facultyRegistrationTv.setOnClickListener(this);
         signupBtn.setOnClickListener(this);
 
-        departmentSp.setOnItemSelectedListener(this);
-        semesterSp.setOnItemSelectedListener(this);
+        industrySp.setOnItemSelectedListener(this);
     }
 
     @Override
@@ -104,10 +100,11 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 finish();
                 break;
             case R.id.activity_faculty_registration_btn:
+                progressDialog.show();
                 singupStudent();
                 break;
             case R.id.activity_signup_faculty_registration_tv:
-                Intent gotoFacultyRegistration = new Intent(SignupActivity.this, FacultyRegistrationActivity.class);
+                Intent gotoFacultyRegistration = new Intent(SignupActivity.this, MentorRegistrationActivity.class);
                 startActivity(gotoFacultyRegistration);
                 finish();
                 break;
@@ -116,12 +113,10 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
     private void singupStudent() {
 
-        progressDialog.show();
 
         fullname = fullNameEd.getText().toString().trim();
         email = emailEd.getText().toString().trim();
         password = pwdEd.getText().toString().trim();
-        enrollment = enrollmentEd.getText().toString().trim();
         mobile = mobileEd.getText().toString().trim();
 
         auth.createUserWithEmailAndPassword(email, password)
@@ -131,9 +126,9 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                         if (!task.isSuccessful()) {
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                                 Toast.makeText(SignupActivity.this, "User with this email already exist.", Toast.LENGTH_SHORT).show();
-                                progressDialog.hide();
+                                progressDialog.dismiss();
                             }
-                            progressDialog.hide();
+                            progressDialog.dismiss();
                             Toast.makeText(SignupActivity.this, task.getException() + "", Toast.LENGTH_SHORT).show();
                             Log.e("TAG", task.getException() + "");
 
@@ -142,13 +137,11 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                             String userId = user.getUid();
 
                             mDatabase.child(userId)
-                                    .setValue(new StudentModel(fullname
+                                    .setValue(new UserModel(fullname
                                                     , email
                                                     , password
-                                                    , enrollment
                                                     , mobile
-                                                    , department
-                                                    , semester, true),
+                                                    , industry, false),
                                             new DatabaseReference.CompletionListener() {
                                                 @Override
                                                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -158,7 +151,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                                                     } else {
                                                         Toast.makeText(SignupActivity.this, "Success ! Faculty will Verify your account !", Toast.LENGTH_SHORT).show();
                                                         finish();
-                                                        progressDialog.hide();
+                                                        progressDialog.dismiss();
 
                                                     }
                                                 }
@@ -170,18 +163,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-        final Spinner spinner = (Spinner) adapterView;
-        switch (spinner.getId()) {
-            case R.id.activity_faculty_registration_department_spinner:
-                department = spinner.getSelectedItem().toString();
-                break;
-            case R.id.activity_signup_semester_spinner:
-                semester = spinner.getSelectedItem().toString();
-                break;
-        }
-
-
+        industry = adapterView.getSelectedItem().toString();
     }
 
     @Override

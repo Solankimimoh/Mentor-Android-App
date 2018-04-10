@@ -75,25 +75,6 @@
             app:layout_constraintTop_toBottomOf="@+id/activity_faculty_registration_email_ed" />
 
         <EditText
-            android:id="@+id/activity_signup_enrollment_ed"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:drawablePadding="8dp"
-            android:drawableStart="@drawable/vector_enrollment"
-            android:ems="10"
-            android:hint="@string/hint_enrollment"
-            android:inputType="phone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_faculty_registration_password_ed" />
-
-        <EditText
             android:id="@+id/activity_faculty_registration_mobile_ed"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -107,7 +88,7 @@
             android:inputType="phone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_signup_enrollment_ed" />
+            app:layout_constraintTop_toBottomOf="@+id/activity_faculty_registration_password_ed" />
 
         <Spinner
             android:id="@+id/activity_faculty_registration_department_spinner"
@@ -124,20 +105,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/activity_faculty_registration_mobile_ed" />
 
-        <Spinner
-            android:id="@+id/activity_signup_semester_spinner"
-            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:entries="@array/semesterArray"
-            android:prompt="@string/select_semester"
-            android:spinnerMode="dialog"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/activity_faculty_registration_department_spinner" />
 
         <Button
             android:id="@+id/activity_faculty_registration_btn"
@@ -155,7 +122,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_signup_semester_spinner"
+            app:layout_constraintTop_toBottomOf="@+id/activity_faculty_registration_department_spinner"
             tools:targetApi="lollipop" />
 
         <TextView

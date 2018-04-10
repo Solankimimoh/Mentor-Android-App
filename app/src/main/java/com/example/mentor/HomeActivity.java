@@ -175,10 +175,7 @@ public class HomeActivity extends AppCompatActivity
 //                final Intent gotoStudentRequest = new Intent(HomeActivity.this, StudentReuqestListActivity.class);
 //                startActivity(gotoStudentRequest);
 //                break;
-            case R.id.menu_send_notification:
-                final Intent gotoSendNotification = new Intent(HomeActivity.this, SendNotificatioActivity.class);
-                startActivity(gotoSendNotification);
-                break;
+
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -189,18 +186,6 @@ public class HomeActivity extends AppCompatActivity
     public void onItemClick(HomeMenuItemModel item) {
 
 
-        if (item.text.equals(getString(R.string.contactus))) {
-            final Intent gotoLocation = new Intent(HomeActivity.this, CollegeLocationActivity.class);
-            startActivity(gotoLocation);
-        } else if (item.text.equals(getString(R.string.sbifees))) {
-            openSBITab();
-        } else if (item.text.equals(getString(R.string.department))) {
-            final Intent gotoDepartment = new Intent(HomeActivity.this, DepartmentListActivity.class);
-            startActivity(gotoDepartment);
-        } else if (item.text.equals(getString(R.string.aboutus))) {
-            final Intent gotoAboutUs = new Intent(HomeActivity.this, AboutActivity.class);
-            startActivity(gotoAboutUs);
-        }
     }
 
     private void openSBITab() {

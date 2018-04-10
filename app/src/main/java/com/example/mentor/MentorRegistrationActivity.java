@@ -23,7 +23,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class FacultyRegistrationActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class MentorRegistrationActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     //    Component
     private EditText fulllnameEd;
@@ -80,7 +80,7 @@ public class FacultyRegistrationActivity extends AppCompatActivity implements Vi
 
         //        Progressbar Dailog
 
-        progressDialog = new ProgressDialog(FacultyRegistrationActivity.this);
+        progressDialog = new ProgressDialog(MentorRegistrationActivity.this);
         progressDialog.setCancelable(false);
         progressDialog.setTitle("Signup");
         progressDialog.setMessage("Creating account");
@@ -109,20 +109,20 @@ public class FacultyRegistrationActivity extends AppCompatActivity implements Vi
         mobile = mobileEd.getText().toString().trim();
 
 
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(FacultyRegistrationActivity.this, new OnCompleteListener<AuthResult>() {
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(MentorRegistrationActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 
                 Log.e("TAG", "CREATE USER");
                 if (!task.isSuccessful()) {
                     if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                        Toast.makeText(FacultyRegistrationActivity.this, "User with this email already exist.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MentorRegistrationActivity.this, "User with this email already exist.", Toast.LENGTH_SHORT).show();
                         progressDialog.hide();
                     }
                 } else {
                     String userId = auth.getCurrentUser().getUid();
                     Log.e("TAG", "INSERT USER");
-                    mDatabase.child(userId).setValue(new FacultyModel(fullname,
+                    mDatabase.child(userId).setValue(new UserModel(fullname,
                             email,
                             password,
                             mobile,
@@ -132,10 +132,10 @@ public class FacultyRegistrationActivity extends AppCompatActivity implements Vi
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError != null) {
-                                Toast.makeText(FacultyRegistrationActivity.this, databaseError.toString(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MentorRegistrationActivity.this, databaseError.toString(), Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(FacultyRegistrationActivity.this, "Success ! Admin verify your account soon!", Toast.LENGTH_SHORT).show();
-                                Intent gotoLogin = new Intent(FacultyRegistrationActivity.this, LoginActivity.class);
+                                Toast.makeText(MentorRegistrationActivity.this, "Success ! Admin verify your account soon!", Toast.LENGTH_SHORT).show();
+                                Intent gotoLogin = new Intent(MentorRegistrationActivity.this, LoginActivity.class);
                                 startActivity(gotoLogin);
                                 progressDialog.hide();
                                 finish();
