@@ -10,20 +10,20 @@ public class UserModel {
     public String password;
     public String mobile;
     public String industry;
-    public boolean isMentor;
-
+    public boolean mentor;
 
     public UserModel() {
     }
 
-    public UserModel(String fullname, String email, String password, String mobile, String industry, boolean isMentor) {
+    public UserModel(String fullname, String email, String password, String mobile, String industry, boolean mentor) {
         this.fullname = fullname;
         this.email = email;
         this.password = password;
         this.mobile = mobile;
         this.industry = industry;
-        this.isMentor = isMentor;
+        this.mentor = mentor;
     }
+
 
     public String getFullname() {
         return fullname;
@@ -66,10 +66,10 @@ public class UserModel {
     }
 
     public boolean isMentor() {
-        return isMentor;
+        return mentor;
     }
 
     public void setMentor(boolean mentor) {
-        isMentor = mentor;
+        this.mentor = mentor;
     }
 }

@@ -47,6 +47,9 @@
 
 
     <string name="about">To establish and manage institutions with an environment in which new ideas, delivery strategies and scholarship flourish and from where leaders and innovators of tomorrow shall emerge</string>
+    <string name="hint_qualification">Enter Qualification</string>
+    <string name="hint_experince">Enter Experience</string>
+    <string name="next">Next</string>
 
 
     <!--Department Array-->
@@ -61,6 +64,11 @@
         <item>Instrumentation Control engineering</item>
         <item>Mechanical engineering</item>
         <item>Power electronics engineeering</item>
+    </string-array>
+
+    <string-array name="mentorType">
+        <item>Developer</item>
+        <item>Faculty</item>
     </string-array>
 
 </resources>

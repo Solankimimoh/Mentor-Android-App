@@ -10,9 +10,13 @@
             android:title="Profile" />
 
         <item
-            android:id="@+id/menu_send_notification"
+            android:id="@+id/menu_notification"
             android:icon="@drawable/vector_notification"
-            android:title="Send Notification" />
+            android:title="Notification" />
+        <item
+            android:id="@+id/menu_review"
+            android:icon="@drawable/vector_feedback"
+            android:title="Notification" />
         <item
             android:id="@+id/menu_signout"
             android:icon="@drawable/vector_logout"

@@ -175,24 +175,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 if (!dataSnapshot.hasChild(auth.getCurrentUser().getUid())) {
                     Toast.makeText(LoginActivity.this, "Credentials not match with login type", Toast.LENGTH_SHORT).show();
-                    progressDialog.hide();
+                    progressDialog.dismiss();
                 } else {
 
                     Log.e("TAG USER", dataSnapshot.child(auth.getCurrentUser().getUid()) + "");
 
-                    final boolean status = Boolean.parseBoolean(dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_DB_ISACTIVATED).getValue().toString());
-
-                    if (!status) {
-                        Toast.makeText(LoginActivity.this, "" + status, Toast.LENGTH_SHORT).show();
-                        progressDialog.hide();
-                        Toast.makeText(LoginActivity.this, "Email ID is not verified yet ! ", Toast.LENGTH_SHORT).show();
-                    } else {
-                        progressDialog.hide();
-                        Intent gotoHomeScreen = new Intent(LoginActivity.this, HomeActivity.class);
-                        gotoHomeScreen.putExtra("KEY_LOGIN_TYPE", firebaseTable);
-                        startActivity(gotoHomeScreen);
-                        finish();
-                    }
+                    progressDialog.dismiss();
+                    Toast.makeText(LoginActivity.this, "Login Sucessfully ! ", Toast.LENGTH_SHORT).show();
+                    Intent gotoHomeScreen = new Intent(LoginActivity.this, HomeActivity.class);
+                    gotoHomeScreen.putExtra("KEY_LOGIN_TYPE", firebaseTable);
+                    startActivity(gotoHomeScreen);
+                    finish();
                 }
 
             }

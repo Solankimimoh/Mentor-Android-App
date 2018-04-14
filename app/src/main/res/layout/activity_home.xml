@@ -20,6 +20,6 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_home"
-        app:menu="@menu/faculty_menu" />
+        app:menu="@menu/mentor_menu" />
 
 </android.support.v4.widget.DrawerLayout>

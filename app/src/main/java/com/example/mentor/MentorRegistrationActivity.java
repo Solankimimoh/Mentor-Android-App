@@ -64,6 +64,7 @@ public class MentorRegistrationActivity extends AppCompatActivity implements Vie
     }
 
     private void initView() {
+
         fulllnameEd = findViewById(R.id.activity_faculty_registration_name_ed);
         emailEd = findViewById(R.id.activity_faculty_registration_email_ed);
         passwordEd = findViewById(R.id.activity_faculty_registration_password_ed);
@@ -74,6 +75,7 @@ public class MentorRegistrationActivity extends AppCompatActivity implements Vie
 
 
         //        Listener Initilization
+
         facultySignupBtn.setOnClickListener(this);
         gotoLogin.setOnClickListener(this);
         departmnetSp.setOnItemSelectedListener(this);
@@ -117,7 +119,7 @@ public class MentorRegistrationActivity extends AppCompatActivity implements Vie
                 if (!task.isSuccessful()) {
                     if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                         Toast.makeText(MentorRegistrationActivity.this, "User with this email already exist.", Toast.LENGTH_SHORT).show();
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                     }
                 } else {
                     String userId = auth.getCurrentUser().getUid();
@@ -135,9 +137,9 @@ public class MentorRegistrationActivity extends AppCompatActivity implements Vie
                                 Toast.makeText(MentorRegistrationActivity.this, databaseError.toString(), Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(MentorRegistrationActivity.this, "Success ! Admin verify your account soon!", Toast.LENGTH_SHORT).show();
-                                Intent gotoLogin = new Intent(MentorRegistrationActivity.this, LoginActivity.class);
-                                startActivity(gotoLogin);
-                                progressDialog.hide();
+                                Intent gotoNextMentorInsertDetails = new Intent(MentorRegistrationActivity.this, MentorDetailsInsertActivity.class);
+                                startActivity(gotoNextMentorInsertDetails);
+                                progressDialog.dismiss();
                                 finish();
                             }
                         }

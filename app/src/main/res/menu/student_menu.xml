@@ -8,6 +8,19 @@
             android:id="@+id/menu_profile"
             android:icon="@drawable/vector_user"
             android:title="Profile" />
+
+        <item
+            android:id="@+id/menu_notification"
+            android:icon="@drawable/vector_notification"
+            android:title="Notification" />
+        <item
+            android:id="@+id/menu_being_mentor"
+            android:icon="@drawable/vector_developer"
+            android:title="Be Mentor" />
+        <item
+            android:id="@+id/menu_review"
+            android:icon="@drawable/vector_feedback"
+            android:title="Notification" />
         <item
             android:id="@+id/menu_signout"
             android:icon="@drawable/vector_logout"

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.customtabs.CustomTabsIntent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -33,6 +34,7 @@ public class HomeActivity extends AppCompatActivity
     private TextView userNameTv;
     private TextView userEmailTv;
     private RecyclerView recyclerView;
+    private FloatingActionButton addPostFloatingActionButton;
     private ArrayList<HomeMenuItemModel> arrayList;
 
     //    Firebase Init
@@ -75,8 +77,12 @@ public class HomeActivity extends AppCompatActivity
                                 Toast.makeText(HomeActivity.this, "Welcome " + dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_TABLE_FULLNAME).getValue().toString(), Toast.LENGTH_SHORT).show();
                                 final String userName = dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_TABLE_FULLNAME).getValue().toString();
                                 final String userEmail = dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_TABLE_EMAIL).getValue().toString();
+//                                final String department = dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_DEPARTMENT).getValue().toString();
                                 userNameTv.setText(userName);
                                 userEmailTv.setText(userEmail);
+
+//                                final String topicName = department.replace(" ", "_");
+//                                FirebaseMessaging.getInstance().subscribeToTopic(topicName);
                             }
 
                             @Override
@@ -112,6 +118,7 @@ public class HomeActivity extends AppCompatActivity
             auth.signOut();
         }
 
+
         final View headerView = navigationView.getHeaderView(0);
 
         userNameTv = headerView.findViewById(R.id.nav_header_home_username);
@@ -138,6 +145,8 @@ public class HomeActivity extends AppCompatActivity
     private void initView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        addPostFloatingActionButton = findViewById(R.id.app_bar_home_addpost_floating);
+
 
         setSupportActionBar(toolbar);
 
