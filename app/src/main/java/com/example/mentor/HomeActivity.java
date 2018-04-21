@@ -1,5 +1,6 @@
 package com.example.mentor;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -24,11 +26,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, RecyclerViewAdapter.ItemListener {
+        implements NavigationView.OnNavigationItemSelectedListener, RecyclerViewAdapter.ItemListener, AddPostAdapter.ItemListener {
 
     //    Component Initlization
     private TextView userNameTv;
@@ -36,6 +39,9 @@ public class HomeActivity extends AppCompatActivity
     private RecyclerView recyclerView;
     private FloatingActionButton addPostFloatingActionButton;
     private ArrayList<HomeMenuItemModel> arrayList;
+    private ArrayList<AddPostModel> addPostModelArrayList;
+    private AddPostAdapter addPostAdapter;
+    private ProgressDialog progressDialog;
 
     //    Firebase Init
     private DatabaseReference DataRef;
@@ -44,6 +50,8 @@ public class HomeActivity extends AppCompatActivity
 
     //    variable
     private String loginType;
+    private String userName;
+    private String industryName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,15 +82,18 @@ public class HomeActivity extends AppCompatActivity
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
 
+                                addPostFloatingActionButton.setVisibility(View.INVISIBLE);
+
                                 Toast.makeText(HomeActivity.this, "Welcome " + dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_TABLE_FULLNAME).getValue().toString(), Toast.LENGTH_SHORT).show();
                                 final String userName = dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_TABLE_FULLNAME).getValue().toString();
                                 final String userEmail = dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_TABLE_EMAIL).getValue().toString();
+                                industryName = dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_INDUSTRY).getValue().toString();
 //                                final String department = dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_DEPARTMENT).getValue().toString();
                                 userNameTv.setText(userName);
                                 userEmailTv.setText(userEmail);
 
-//                                final String topicName = department.replace(" ", "_");
-//                                FirebaseMessaging.getInstance().subscribeToTopic(topicName);
+                                final String topicName = industryName.replace(" ", "_");
+                                FirebaseMessaging.getInstance().subscribeToTopic(topicName);
                             }
 
                             @Override
@@ -99,12 +110,20 @@ public class HomeActivity extends AppCompatActivity
                         .addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
+                                addPostFloatingActionButton.setVisibility(View.VISIBLE);
+
 
                                 Toast.makeText(HomeActivity.this, "Welcome " + dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_TABLE_FULLNAME).getValue().toString(), Toast.LENGTH_SHORT).show();
-                                final String userName = dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_TABLE_FULLNAME).getValue().toString();
+                                userName = dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_TABLE_FULLNAME).getValue().toString();
                                 final String userEmail = dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_TABLE_EMAIL).getValue().toString();
+                                industryName = dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_INDUSTRY).getValue().toString();
                                 userNameTv.setText(userName);
                                 userEmailTv.setText(userEmail);
+
+
+                                final String topicName = industryName.replace(" ", "_");
+                                FirebaseMessaging.getInstance().subscribeToTopic(topicName);
+
                             }
 
                             @Override
@@ -118,6 +137,51 @@ public class HomeActivity extends AppCompatActivity
             auth.signOut();
         }
 
+
+        DataRef.child(AppConstant.FIREBASE_TABLE_POSTS).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if (!addPostModelArrayList.isEmpty()) {
+                    addPostModelArrayList.clear();
+                }
+                for (DataSnapshot addPostModelDataSnapshot : dataSnapshot.getChildren()) {
+                    AddPostModel addPostModel = addPostModelDataSnapshot.getValue(AddPostModel.class);
+                    Log.e("NAME", addPostModel.getTitle());
+                    addPostModelArrayList.add(addPostModel);
+                    addPostAdapter.notifyDataSetChanged();
+
+
+                }
+                progressDialog.dismiss();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("ERROR", databaseError.getMessage());
+                Toast.makeText(HomeActivity.this, "EROR" + databaseError.getDetails(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        addPostAdapter = new AddPostAdapter(HomeActivity.this, addPostModelArrayList, this);
+        recyclerView.setAdapter(addPostAdapter);
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+
+
+        addPostFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(HomeActivity.this, "" + industryName, Toast.LENGTH_SHORT).show();
+                final Intent gotoAddPost = new Intent(HomeActivity.this, AddPostActivity.class);
+                gotoAddPost.putExtra("KEY_INDUSTRY", industryName);
+                gotoAddPost.putExtra("KEY_USERNAME", userName);
+                startActivity(gotoAddPost);
+            }
+        });
 
         final View headerView = navigationView.getHeaderView(0);
 
@@ -147,6 +211,12 @@ public class HomeActivity extends AppCompatActivity
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         addPostFloatingActionButton = findViewById(R.id.app_bar_home_addpost_floating);
 
+        progressDialog = new ProgressDialog(HomeActivity.this);
+        progressDialog.setTitle("Faculty Details");
+        progressDialog.setMessage("Loading.....");
+        progressDialog.show();
+
+        addPostModelArrayList = new ArrayList<>();
 
         setSupportActionBar(toolbar);
 
@@ -180,6 +250,29 @@ public class HomeActivity extends AppCompatActivity
                 finish();
                 break;
 
+            case R.id.menu_profile:
+                final Intent gotoProfile = new Intent(HomeActivity.this, ProfileActivity.class);
+                gotoProfile.putExtra("KEY_LOGIN_TYPE", loginType);
+                startActivity(gotoProfile);
+                break;
+
+            case R.id.menu_being_mentor:
+                final Intent gotoBeMentor = new Intent(HomeActivity.this, MentorDetailsInsertActivity.class);
+                startActivity(gotoBeMentor);
+
+            case R.id.menu_aboutapp:
+                final Intent gotoAboutApp = new Intent(HomeActivity.this, AboutAppActivity.class);
+                startActivity(gotoAboutApp);
+                break;
+            case R.id.menu_developer:
+                final Intent gotoDeveloper = new Intent(HomeActivity.this, DeveloperActivity.class);
+                startActivity(gotoDeveloper);
+                break;
+            case R.id.menu_request:
+                final Intent gotoMentorRequest = new Intent(HomeActivity.this, RequestPostMentorActivity.class);
+                startActivity(gotoMentorRequest);
+
+
 //            case R.id.menu_aprove_student:
 //                final Intent gotoStudentRequest = new Intent(HomeActivity.this, StudentReuqestListActivity.class);
 //                startActivity(gotoStudentRequest);
@@ -206,4 +299,8 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
+    @Override
+    public void onItemClick(AddPostModel item) {
+
+    }
 }

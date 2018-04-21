@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Mentor</string>
+    <string name="app_name">GOD</string>
     <string name="loginScreen">Login</string>
     <string name="hint_email">Enter You Email</string>
     <string name="hint_pwd">Enter Your Password</string>
@@ -50,6 +50,14 @@
     <string name="hint_qualification">Enter Qualification</string>
     <string name="hint_experince">Enter Experience</string>
     <string name="next">Next</string>
+    <string name="post_title">Title of Post</string>
+    <string name="post_description">Description of Post</string>
+    <string name="filename">File name</string>
+    <string name="choose_file">choose file</string>
+    <string name="send">Send</string>
+    <string name="nofile_selected">No File selected</string>
+    <string name="title">Title</string>
+    <string name="date">Date</string>
 
 
     <!--Department Array-->
