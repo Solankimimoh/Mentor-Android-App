@@ -11,19 +11,20 @@ public class UserModel {
     public String mobile;
     public String industry;
     public boolean mentor;
+    private String avatar;
 
-    public UserModel() {
-    }
-
-    public UserModel(String fullname, String email, String password, String mobile, String industry, boolean mentor) {
+    public UserModel(String fullname, String email, String password, String mobile, String industry, boolean mentor, String avatar) {
         this.fullname = fullname;
         this.email = email;
         this.password = password;
         this.mobile = mobile;
         this.industry = industry;
         this.mentor = mentor;
+        this.avatar = avatar;
     }
 
+    public UserModel() {
+    }
 
     public String getFullname() {
         return fullname;
@@ -71,5 +72,13 @@ public class UserModel {
 
     public void setMentor(boolean mentor) {
         this.mentor = mentor;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

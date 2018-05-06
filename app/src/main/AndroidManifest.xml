@@ -69,7 +69,8 @@
             android:theme="@style/MyMaterialTheme.Base" />
         <activity android:name=".AboutAppActivity" />
         <activity android:name=".DeveloperActivity" />
-        <activity android:name=".RequestPostMentorActivity"></activity>
+        <activity android:name=".RequestPostMentorActivity" />
+        <activity android:name=".PostDetailsActivity"></activity>
     </application>
 
 </manifest>

@@ -14,7 +14,7 @@
         tools:context="com.lj.ljengineeringcollege.SignupActivity">
 
         <ImageView
-            android:id="@+id/login_logo_img"
+            android:id="@+id/activity_signup_student_avtar"
             android:layout_width="159dp"
             android:layout_height="127dp"
             android:layout_marginTop="41dp"
@@ -24,6 +24,22 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/mentor_logo"
             tools:ignore="VectorDrawableCompat" />
+
+        <EditText
+            android:id="@+id/activity_mentor_details_insert_skill_ed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/vector_education"
+            android:ems="10"
+            android:hint="@string/skill"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_signup_student_avtar" />
 
         <EditText
             android:id="@+id/activity_mentor_details_insert_qualification_ed"
@@ -39,7 +55,7 @@
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/login_logo_img" />
+            app:layout_constraintTop_toBottomOf="@+id/activity_mentor_details_insert_skill_ed" />
 
         <EditText
             android:id="@+id/activity_mentor_details_insert_experience"
@@ -67,7 +83,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
             android:entries="@array/mentorType"
-            android:prompt="@string/select_department"
+            android:prompt="@string/select_role"
             android:spinnerMode="dialog"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

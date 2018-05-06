@@ -14,7 +14,7 @@
         tools:layout_editor_absoluteY="81dp">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/dialog_layout_profile_img"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginEnd="8dp"
@@ -42,7 +42,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+            app:layout_constraintTop_toBottomOf="@+id/dialog_layout_profile_img" />
 
         <TextView
             android:id="@+id/dialog_layout_student_email"
@@ -70,7 +70,7 @@
             android:layout_marginTop="24dp"
             android:drawableLeft="@drawable/vector_enrollment"
             android:drawablePadding="10dp"
-            android:drawableStart="@drawable/vector_enrollment"
+            android:drawableStart="@drawable/vector_mobile"
             android:text="@string/app_name"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -86,25 +86,27 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:drawablePadding="10dp"
-            android:drawableStart="@drawable/vector_mobile"
+            android:drawableStart="@drawable/vector_enrollment"
             android:text="@string/app_name"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dialog_layout_student_enrollment" />
 
-        <Button
-            android:id="@+id/dialog_layout_student_cancle_btn"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/dialog_layout_student_skill"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginTop="32dp"
-            android:background="@color/colorPrimary"
-            android:text="@string/cancle"
-            android:textColor="@color/colorWhite"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:drawablePadding="10dp"
+            android:drawableStart="@drawable/vector_enrollment"
+            android:text="@string/app_name"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dialog_layout_student_mobile" />
 
         <Button
@@ -113,13 +115,28 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
             android:layout_marginEnd="24dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="24dp"
             android:background="@color/colorPrimary"
             android:text="@string/approve_st"
             android:textColor="@color/colorWhite"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/dialog_layout_student_cancle_btn"
-            app:layout_constraintTop_toBottomOf="@+id/dialog_layout_student_mobile" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dialog_layout_student_skill" />
+
+        <Button
+            android:id="@+id/dialog_layout_student_send_mail_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:background="@color/colorPrimary"
+            android:text="@string/request"
+            android:textColor="@color/colorWhite"
+            app:layout_constraintEnd_toStartOf="@+id/dialog_layout_student_aprove_btn"
+            app:layout_constraintHorizontal_bias="0.84"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dialog_layout_student_skill" />
 
 
     </android.support.constraint.ConstraintLayout>

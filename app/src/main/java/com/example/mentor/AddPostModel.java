@@ -4,24 +4,29 @@ public class AddPostModel {
 
     private String title;
     private String description;
-    private String imagename;
-    private String imageurl;
-    private String mentorname;
+    private String filename;
+    private String fileurl;
+    private String fileThumburl;
+    private String username;
     private String industry;
     private String postdate;
-
+    private String postPushKey;
+    private String postUserAvatar;
 
     public AddPostModel() {
     }
 
-    public AddPostModel(String title, String description, String imagename, String imageurl, String mentorname, String industry, String postdate) {
+    public AddPostModel(String title, String description, String filename, String fileurl, String fileThumburl, String username, String industry, String postdate, String postPushKey, String postUserAvatar) {
         this.title = title;
         this.description = description;
-        this.imagename = imagename;
-        this.imageurl = imageurl;
-        this.mentorname = mentorname;
+        this.filename = filename;
+        this.fileurl = fileurl;
+        this.fileThumburl = fileThumburl;
+        this.username = username;
         this.industry = industry;
         this.postdate = postdate;
+        this.postPushKey = postPushKey;
+        this.postUserAvatar = postUserAvatar;
     }
 
     public String getTitle() {
@@ -40,28 +45,36 @@ public class AddPostModel {
         this.description = description;
     }
 
-    public String getImagename() {
-        return imagename;
+    public String getFilename() {
+        return filename;
     }
 
-    public void setImagename(String imagename) {
-        this.imagename = imagename;
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
-    public String getImageurl() {
-        return imageurl;
+    public String getFileurl() {
+        return fileurl;
     }
 
-    public void setImageurl(String imageurl) {
-        this.imageurl = imageurl;
+    public void setFileurl(String fileurl) {
+        this.fileurl = fileurl;
     }
 
-    public String getMentorname() {
-        return mentorname;
+    public String getFileThumburl() {
+        return fileThumburl;
     }
 
-    public void setMentorname(String mentorname) {
-        this.mentorname = mentorname;
+    public void setFileThumburl(String fileThumburl) {
+        this.fileThumburl = fileThumburl;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getIndustry() {
@@ -78,5 +91,21 @@ public class AddPostModel {
 
     public void setPostdate(String postdate) {
         this.postdate = postdate;
+    }
+
+    public String getPostPushKey() {
+        return postPushKey;
+    }
+
+    public void setPostPushKey(String postPushKey) {
+        this.postPushKey = postPushKey;
+    }
+
+    public String getPostUserAvatar() {
+        return postUserAvatar;
+    }
+
+    public void setPostUserAvatar(String postUserAvatar) {
+        this.postUserAvatar = postUserAvatar;
     }
 }

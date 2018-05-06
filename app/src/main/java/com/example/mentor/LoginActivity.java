@@ -2,6 +2,7 @@ package com.example.mentor;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -23,7 +24,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
+import static com.basgeekball.awesomevalidation.ValidationStyle.BASIC;
 import static com.basgeekball.awesomevalidation.ValidationStyle.COLORATION;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -55,26 +58,32 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         auth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        AwesomeValidation mAwesomeValidation = new AwesomeValidation(BASIC);
 
-//        if (auth.getCurrentUser() != null) {
-//            auth.signOut();
-//            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-//            startActivity(intent);
-//            finish();
-//        }
+        Intent checkToken = getIntent();
+        if (checkToken.hasExtra("KEY_LOGIN")) {
+            auth.signOut();
+        } else {
+
+            if (auth.getCurrentUser() != null) {
+                FirebaseMessaging.getInstance().subscribeToTopic("all");
+
+                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                startActivity(intent);
+                finish();
+
+            }
+        }
+
 
         initView();
-
-
         initValidationRules();
-
-
     }
 
     private void initValidationRules() {
-        String regexPassword = "(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[~`!@#\\$%\\^&\\*\\(\\)\\-_\\+=\\{\\}\\[\\]\\|\\;:\"<>,./\\?]).{8,}";
-        mAwesomeValidation.addValidation(LoginActivity.this, R.id.activity_faculty_registration_email_ed, android.util.Patterns.EMAIL_ADDRESS, R.string.val_err_email);
-        //        mAwesomeValidation.addValidation(LoginActivity.this, R.id.activity_signup_password_ed, regexPassword, R.string.err_password);
+        String regexPassword = "[a-zA-Z0-9\\\\!\\\\\\@\\\\#\\\\$]{8,24}";
+        mAwesomeValidation.addValidation(LoginActivity.this, R.id.activity_login_email_ed, android.util.Patterns.EMAIL_ADDRESS, R.string.val_err_email);
+        mAwesomeValidation.addValidation(LoginActivity.this, R.id.activity_login_password_ed, regexPassword, R.string.err_password);
     }
 
     private void initView() {
@@ -178,9 +187,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     progressDialog.dismiss();
                 } else {
 
-                    Log.e("TAG USER", dataSnapshot.child(auth.getCurrentUser().getUid()) + "");
+                    Log.e("USER DEPRT", dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_INDUSTRY).getValue().toString() + "");
 
                     progressDialog.dismiss();
+                    SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString("KEY_LOGIN_TYPE", firebaseTable);
+                    editor.putString("KEY_DEPARTMENT", dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_INDUSTRY).getValue().toString());
+                    editor.commit();
                     Toast.makeText(LoginActivity.this, "Login Sucessfully ! ", Toast.LENGTH_SHORT).show();
                     Intent gotoHomeScreen = new Intent(LoginActivity.this, HomeActivity.class);
                     gotoHomeScreen.putExtra("KEY_LOGIN_TYPE", firebaseTable);

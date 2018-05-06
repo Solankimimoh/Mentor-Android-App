@@ -25,4 +25,6 @@ public class AppConstant {
     final static String FIREBASE_DB_ISACTIVATED = "isActivated";
 
 
+    public static final String FIREBASE_TABLE_POST_REVIEW = "commentPost";
+    public static final String FIREBASE_TABLE_POST_LIKES = "likePost";
 }

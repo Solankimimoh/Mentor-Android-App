@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GOD</string>
+    <string name="app_name">Guru On Demand</string>
     <string name="loginScreen">Login</string>
     <string name="hint_email">Enter You Email</string>
     <string name="hint_pwd">Enter Your Password</string>
@@ -12,7 +12,7 @@
     <string name="hint_enrollment">Enter Your Enrollment</string>
     <string name="hint_mobile">Enter Your Mobile</string>
     <string name="already_registered">Already Registered user?</string>
-    <string name="err_password">The password should contain at least 8 characters, including at least one lower case letter, one upper case letter, one number and one punctuation mark</string>
+    <string name="err_password">The password should contain at least 8 characters, including at least one lower case letter, one upper case letter, one number</string>
     <string name="title_activity_home">HomeActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -58,6 +58,17 @@
     <string name="nofile_selected">No File selected</string>
     <string name="title">Title</string>
     <string name="date">Date</string>
+    <string name="err_name">Enter Your Name</string>
+    <string name="err_tel">Enter 10 digit mobile number</string>
+    <string name="skill"><![CDATA[Exeprt & Skills]]></string>
+    <string name="valid_value">Enter Value</string>
+    <string name="request">Request</string>
+    <string name="select_role">Select Role</string>
+    <string name="submit">Submit</string>
+    <string name="book_review">Comment</string>
+    <string name="download_file">Download</string>
+    <string name="like">Likes</string>
+    <string name="category">Industry</string>
 
 
     <!--Department Array-->
@@ -65,13 +76,13 @@
         <item>Chemical engineering</item>
         <item>Computer engineering</item>
         <item>Civil engineering</item>
-        <item>Applied mechanics department</item>
+        <item>Applied mechanics</item>
         <item>Electrical engineering</item>
-        <item>Electronics communication engineering</item>
+        <item>E.C engineering</item>
         <item>Information technology</item>
-        <item>Instrumentation Control engineering</item>
+        <item>Instrumentation Control</item>
         <item>Mechanical engineering</item>
-        <item>Power electronics engineeering</item>
+        <item>Power electronics</item>
     </string-array>
 
     <string-array name="mentorType">

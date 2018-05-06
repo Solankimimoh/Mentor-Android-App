@@ -2,6 +2,9 @@ package com.example.mentor;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.customtabs.CustomTabsIntent;
@@ -14,9 +17,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +41,7 @@ public class HomeActivity extends AppCompatActivity
     //    Component Initlization
     private TextView userNameTv;
     private TextView userEmailTv;
+    private ImageView profileAvatarImg;
     private RecyclerView recyclerView;
     private FloatingActionButton addPostFloatingActionButton;
     private ArrayList<HomeMenuItemModel> arrayList;
@@ -51,7 +57,10 @@ public class HomeActivity extends AppCompatActivity
     //    variable
     private String loginType;
     private String userName;
+    private String loginTypeString;
     private String industryName;
+    private String postPushKey;
+    private String postUserAvatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +77,84 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+
+        SharedPreferences.Editor editor = pref.edit();
+
+        loginType = pref.getString("KEY_LOGIN_TYPE", null);
+
+        if (loginType != null) {
+
+            Log.e("LOGIN", loginType);
+            if (loginType.equals(AppConstant.FIREBASE_TABLE_STUDNET)) {
+
+                navigationView.getMenu().clear();
+                navigationView.inflateMenu(R.menu.student_menu);
+
+                DataRef.child(loginType)
+                        .addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                addPostFloatingActionButton.setVisibility(View.INVISIBLE);
+
+                                Toast.makeText(HomeActivity.this, "Welcome " + dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_TABLE_FULLNAME).getValue().toString(), Toast.LENGTH_SHORT).show();
+                                final String userName = dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_TABLE_FULLNAME).getValue().toString();
+                                final String userEmail = dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_TABLE_EMAIL).getValue().toString();
+                                industryName = dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_INDUSTRY).getValue().toString();
+//                                final String department = dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_DEPARTMENT).getValue().toString();
+                                userNameTv.setText(userName);
+                                userEmailTv.setText(userEmail);
+                                Bitmap src;
+                                postUserAvatar = dataSnapshot.child(auth.getCurrentUser().getUid()).child("avatar").getValue().toString();
+                                String imgBase64 = dataSnapshot.child(auth.getCurrentUser().getUid()).child("avatar").getValue().toString();
+                                byte[] decodedString = Base64.decode(imgBase64, Base64.DEFAULT);
+                                src = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                profileAvatarImg.setImageDrawable(ImageUtils.roundedImage(HomeActivity.this, src));
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError error) {
+                                // Failed to read value
+                                Log.e("TAG", "Failed to read value.", error.toException());
+                            }
+                        });
+            } else if (loginType.equals(AppConstant.FIREBASE_TABLE_MENTOR)) {
+
+
+                DataRef.child(loginType)
+                        .addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                addPostFloatingActionButton.setVisibility(View.VISIBLE);
+
+                                industryName = dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_INDUSTRY).getValue().toString();
+                                userNameTv.setText(dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_TABLE_FULLNAME).getValue().toString());
+                                userEmailTv.setText(dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_TABLE_EMAIL).getValue().toString());
+                                Bitmap src;
+                                postUserAvatar = dataSnapshot.child(auth.getCurrentUser().getUid()).child("avatar").getValue().toString();
+
+                                String imgBase64 = dataSnapshot.child(auth.getCurrentUser().getUid()).child("avatar").getValue().toString();
+                                byte[] decodedString = Base64.decode(imgBase64, Base64.DEFAULT);
+                                src = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                profileAvatarImg.setImageDrawable(ImageUtils.roundedImage(HomeActivity.this, src));
+
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError error) {
+                                // Failed to read value
+                                Log.e("TAG", "Failed to read value.", error.toException());
+                            }
+                        });
+            }
+
+        }
+
+
         if (intent.hasExtra("KEY_LOGIN_TYPE")) {
 
             loginType = intent.getStringExtra("KEY_LOGIN_TYPE");
@@ -91,6 +178,13 @@ public class HomeActivity extends AppCompatActivity
 //                                final String department = dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_DEPARTMENT).getValue().toString();
                                 userNameTv.setText(userName);
                                 userEmailTv.setText(userEmail);
+                                Bitmap src;
+                                postUserAvatar = dataSnapshot.child(auth.getCurrentUser().getUid()).child("avatar").getValue().toString();
+
+                                String imgBase64 = dataSnapshot.child(auth.getCurrentUser().getUid()).child("avatar").getValue().toString();
+                                byte[] decodedString = Base64.decode(imgBase64, Base64.DEFAULT);
+                                src = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                profileAvatarImg.setImageDrawable(ImageUtils.roundedImage(HomeActivity.this, src));
 
                                 final String topicName = industryName.replace(" ", "_");
                                 FirebaseMessaging.getInstance().subscribeToTopic(topicName);
@@ -103,7 +197,6 @@ public class HomeActivity extends AppCompatActivity
                             }
                         });
             } else if (loginType.equals(AppConstant.FIREBASE_TABLE_MENTOR)) {
-                Toast.makeText(this, "Faculty", Toast.LENGTH_SHORT).show();
                 loginType = intent.getStringExtra("KEY_LOGIN_TYPE");
 
                 DataRef.child(loginType)
@@ -119,6 +212,13 @@ public class HomeActivity extends AppCompatActivity
                                 industryName = dataSnapshot.child(auth.getCurrentUser().getUid()).child(AppConstant.FIREBASE_INDUSTRY).getValue().toString();
                                 userNameTv.setText(userName);
                                 userEmailTv.setText(userEmail);
+                                Bitmap src;
+                                postUserAvatar = dataSnapshot.child(auth.getCurrentUser().getUid()).child("avatar").getValue().toString();
+
+                                String imgBase64 = dataSnapshot.child(auth.getCurrentUser().getUid()).child("avatar").getValue().toString();
+                                byte[] decodedString = Base64.decode(imgBase64, Base64.DEFAULT);
+                                src = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                profileAvatarImg.setImageDrawable(ImageUtils.roundedImage(HomeActivity.this, src));
 
 
                                 final String topicName = industryName.replace(" ", "_");
@@ -133,10 +233,7 @@ public class HomeActivity extends AppCompatActivity
                             }
                         });
             }
-        } else {
-            auth.signOut();
         }
-
 
         DataRef.child(AppConstant.FIREBASE_TABLE_POSTS).addValueEventListener(new ValueEventListener() {
             @Override
@@ -146,7 +243,18 @@ public class HomeActivity extends AppCompatActivity
                     addPostModelArrayList.clear();
                 }
                 for (DataSnapshot addPostModelDataSnapshot : dataSnapshot.getChildren()) {
-                    AddPostModel addPostModel = addPostModelDataSnapshot.getValue(AddPostModel.class);
+                    postPushKey = addPostModelDataSnapshot.getKey();
+                    AddPostModel addPostModel = new AddPostModel();
+                    addPostModel.setTitle(addPostModelDataSnapshot.child("title").getValue().toString());
+                    addPostModel.setDescription(addPostModelDataSnapshot.child("description").getValue().toString());
+                    addPostModel.setFilename(addPostModelDataSnapshot.child("filename").getValue().toString());
+                    addPostModel.setFileThumburl(addPostModelDataSnapshot.child("fileThumburl").getValue().toString());
+                    addPostModel.setFileurl(addPostModelDataSnapshot.child("fileurl").getValue().toString());
+                    addPostModel.setUsername(addPostModelDataSnapshot.child("username").getValue().toString());
+                    addPostModel.setIndustry(addPostModelDataSnapshot.child("industry").getValue().toString());
+                    addPostModel.setPostdate(addPostModelDataSnapshot.child("postdate").getValue().toString());
+                    addPostModel.setPostPushKey(addPostModelDataSnapshot.getKey());
+                    addPostModel.setPostUserAvatar(addPostModelDataSnapshot.child("postUserAvatar").getValue().toString());
                     Log.e("NAME", addPostModel.getTitle());
                     addPostModelArrayList.add(addPostModel);
                     addPostAdapter.notifyDataSetChanged();
@@ -175,10 +283,11 @@ public class HomeActivity extends AppCompatActivity
         addPostFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(HomeActivity.this, "" + industryName, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(HomeActivity.this, "" + industryName, Toast.LENGTH_SHORT).show();
                 final Intent gotoAddPost = new Intent(HomeActivity.this, AddPostActivity.class);
                 gotoAddPost.putExtra("KEY_INDUSTRY", industryName);
                 gotoAddPost.putExtra("KEY_USERNAME", userName);
+                gotoAddPost.putExtra("KEY_USER_AVATAR", postUserAvatar);
                 startActivity(gotoAddPost);
             }
         });
@@ -187,6 +296,7 @@ public class HomeActivity extends AppCompatActivity
 
         userNameTv = headerView.findViewById(R.id.nav_header_home_username);
         userEmailTv = headerView.findViewById(R.id.nav_header_home_email);
+        profileAvatarImg = headerView.findViewById(R.id.user_avtar);
 
 
         arrayList = new ArrayList<>();
@@ -245,6 +355,7 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         switch (id) {
+
             case R.id.menu_signout:
                 auth.signOut();
                 finish();
@@ -259,18 +370,22 @@ public class HomeActivity extends AppCompatActivity
             case R.id.menu_being_mentor:
                 final Intent gotoBeMentor = new Intent(HomeActivity.this, MentorDetailsInsertActivity.class);
                 startActivity(gotoBeMentor);
+                break;
 
             case R.id.menu_aboutapp:
                 final Intent gotoAboutApp = new Intent(HomeActivity.this, AboutAppActivity.class);
                 startActivity(gotoAboutApp);
                 break;
+
             case R.id.menu_developer:
                 final Intent gotoDeveloper = new Intent(HomeActivity.this, DeveloperActivity.class);
                 startActivity(gotoDeveloper);
                 break;
-            case R.id.menu_request:
-                final Intent gotoMentorRequest = new Intent(HomeActivity.this, RequestPostMentorActivity.class);
-                startActivity(gotoMentorRequest);
+
+//            case R.id.menu_request:
+//                final Intent gotoMentorRequest = new Intent(HomeActivity.this, RequestPostMentorActivity.class);
+//                startActivity(gotoMentorRequest);
+//                break;
 
 
 //            case R.id.menu_aprove_student:
@@ -301,6 +416,17 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(AddPostModel item) {
+
+        final Intent gotoBookDetails = new Intent(HomeActivity.this, PostDetailsActivity.class);
+
+        gotoBookDetails.putExtra("KEY_POST", item.getPostPushKey());
+        gotoBookDetails.putExtra("KEY_FILE_NAME", item.getFilename());
+        gotoBookDetails.putExtra("KEY_INDUSTRY", item.getIndustry());
+        gotoBookDetails.putExtra("KEY_FILE_URL", item.getFileurl());
+        gotoBookDetails.putExtra("KEY_FILE_THUMB", item.getFileThumburl());
+
+        startActivity(gotoBookDetails);
+
 
     }
 }

@@ -19,6 +19,13 @@ public class RequestPostMentorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_request_post_mentor);
 
         initView();
+
+        final Intent intent = getIntent();
+
+        if (intent.hasExtra("EMAIL_KEY")) {
+
+            emailIdEd.setText(intent.getStringExtra("EMAIL_KEY"));
+        }
     }
 
     private void initView() {
@@ -30,9 +37,9 @@ public class RequestPostMentorActivity extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String to=emailIdEd.getText().toString();
+                String to = emailIdEd.getText().toString();
                 Intent email = new Intent(Intent.ACTION_SEND);
-                email.putExtra(Intent.EXTRA_EMAIL, new String[]{ to});
+                email.putExtra(Intent.EXTRA_EMAIL, new String[]{to});
                 email.putExtra(Intent.EXTRA_SUBJECT, "Student Request FROM GOD");
                 email.putExtra(Intent.EXTRA_TEXT, messageEd.getText());
 

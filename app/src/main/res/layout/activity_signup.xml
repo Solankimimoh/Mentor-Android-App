@@ -14,7 +14,7 @@
         tools:context="com.lj.ljengineeringcollege.SignupActivity">
 
         <ImageView
-            android:id="@+id/login_logo_img"
+            android:id="@+id/activity_signup_student_avtar"
             android:layout_width="159dp"
             android:layout_height="127dp"
             android:layout_marginTop="41dp"
@@ -22,11 +22,11 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/mentor_logo"
+            app:srcCompat="@drawable/profile_icon"
             tools:ignore="VectorDrawableCompat" />
 
         <EditText
-            android:id="@+id/activity_faculty_registration_name_ed"
+            android:id="@+id/activity_registration_name_ed"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
@@ -39,10 +39,10 @@
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/login_logo_img" />
+            app:layout_constraintTop_toBottomOf="@+id/activity_signup_student_avtar" />
 
         <EditText
-            android:id="@+id/activity_faculty_registration_email_ed"
+            android:id="@+id/activity_registration_email_ed"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
@@ -56,10 +56,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_faculty_registration_name_ed" />
+            app:layout_constraintTop_toBottomOf="@+id/activity_registration_name_ed" />
 
         <EditText
-            android:id="@+id/activity_faculty_registration_password_ed"
+            android:id="@+id/activity_registration_password_ed"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
@@ -72,10 +72,10 @@
             android:inputType="textPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_faculty_registration_email_ed" />
+            app:layout_constraintTop_toBottomOf="@+id/activity_registration_email_ed" />
 
         <EditText
-            android:id="@+id/activity_faculty_registration_mobile_ed"
+            android:id="@+id/activity_registration_mobile_ed"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
@@ -88,10 +88,10 @@
             android:inputType="phone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_faculty_registration_password_ed" />
+            app:layout_constraintTop_toBottomOf="@+id/activity_registration_password_ed" />
 
         <Spinner
-            android:id="@+id/activity_faculty_registration_department_spinner"
+            android:id="@+id/activity_registration_department_spinner"
             style="@style/Base.Widget.AppCompat.Spinner.Underlined"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -103,11 +103,11 @@
             android:spinnerMode="dialog"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_faculty_registration_mobile_ed" />
+            app:layout_constraintTop_toBottomOf="@+id/activity_registration_mobile_ed" />
 
 
         <Button
-            android:id="@+id/activity_faculty_registration_btn"
+            android:id="@+id/activity_registration_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
@@ -122,7 +122,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_faculty_registration_department_spinner"
+            app:layout_constraintTop_toBottomOf="@+id/activity_registration_department_spinner"
             tools:targetApi="lollipop" />
 
         <TextView
@@ -135,7 +135,7 @@
             android:text="@string/already_registered"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_faculty_registration_btn" />
+            app:layout_constraintTop_toBottomOf="@+id/activity_registration_btn" />
 
         <TextView
             android:id="@+id/activity_signup_faculty_registration_tv"
@@ -147,7 +147,7 @@
             android:text="@string/faculty_reg"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_faculty_registration_btn"
+            app:layout_constraintTop_toBottomOf="@+id/activity_registration_btn"
             app:layout_constraintVertical_bias="0.49" />
 
     </android.support.constraint.ConstraintLayout>

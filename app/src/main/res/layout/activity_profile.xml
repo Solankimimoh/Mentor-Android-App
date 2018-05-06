@@ -15,10 +15,10 @@
         tools:layout_editor_absoluteY="81dp">
 
         <ImageView
-            android:id="@+id/activity_profile_logo"
+            android:id="@+id/activity_profile_user_avatar_img"
             android:layout_width="75dp"
             android:layout_height="44dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -29,12 +29,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
             android:drawablePadding="10dp"
             android:drawableStart="@drawable/vector_user"
             android:text="TextView"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_profile_logo" />
+            app:layout_constraintTop_toBottomOf="@+id/activity_profile_user_avatar_img" />
 
         <TextView
             android:id="@+id/activity_profile_email"
@@ -64,11 +65,10 @@
             android:id="@+id/activity_profile_industry"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:layout_marginTop="23dp"
             android:drawablePadding="10dp"
             android:drawableStart="@drawable/vector_department"
-            android:text="TextView"
+            android:text="Power electronics engineering"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             app:layout_constraintStart_toStartOf="@+id/activity_profile_mobile"
             app:layout_constraintTop_toBottomOf="@+id/activity_profile_mobile" />
@@ -81,7 +81,7 @@
             android:layout_marginTop="24dp"
             android:drawablePadding="10dp"
             android:drawableStart="@drawable/vector_education"
-            android:text="TextView"
+            android:text="Loading..."
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             app:layout_constraintStart_toStartOf="@+id/activity_profile_industry"
             app:layout_constraintTop_toBottomOf="@+id/activity_profile_industry" />
@@ -93,7 +93,7 @@
             android:layout_marginTop="24dp"
             android:drawablePadding="10dp"
             android:drawableStart="@drawable/vector_education"
-            android:text="TextView"
+            android:text="Loading..."
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             app:layout_constraintStart_toStartOf="@+id/activity_profile_experience"
             app:layout_constraintTop_toBottomOf="@+id/activity_profile_experience" />
@@ -106,28 +106,41 @@
             android:layout_marginTop="24dp"
             android:drawablePadding="10dp"
             android:drawableStart="@drawable/vector_education"
-            android:text="TextView"
+            android:text="Loading..."
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             app:layout_constraintStart_toStartOf="@+id/activity_profile_education"
             app:layout_constraintTop_toBottomOf="@+id/activity_profile_education" />
 
-        <Button
-            android:id="@+id/activity_profile_following"
+        <TextView
+            android:id="@+id/activity_profile_mentor_skill_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:drawablePadding="10dp"
+            android:drawableStart="@drawable/vector_education"
+            android:text="Loading..."
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            app:layout_constraintStart_toStartOf="@+id/activity_profile_mentor_type"
+            app:layout_constraintTop_toBottomOf="@+id/activity_profile_mentor_type" />
+
+        <Button
+            android:id="@+id/activity_profile_follower_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
             android:layout_marginTop="24dp"
             android:background="@color/colorPrimary"
             android:paddingEnd="10dp"
             android:paddingStart="10dp"
-            android:text="Followers / Following"
+            android:text="Followers"
             android:textColor="@color/colorWhite"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_profile_mentor_type" />
+            app:layout_constraintTop_toBottomOf="@+id/activity_profile_mentor_skill_tv"
+            app:layout_constraintVertical_bias="1.0" />
 
 
     </android.support.constraint.ConstraintLayout>

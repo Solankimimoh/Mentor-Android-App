@@ -1,11 +1,15 @@
 package com.example.mentor;
 
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -37,16 +41,20 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.shockwave.pdfium.PdfDocument;
+import com.shockwave.pdfium.PdfiumCore;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 
 public class AddPostActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -61,16 +69,20 @@ public class AddPostActivity extends AppCompatActivity implements View.OnClickLi
     private TextView postFileNameTv;
     private TextView postUploadStatusTv;
     private ProgressBar postUploadProgressBar;
+    private TextView textViewStatus;
 
 
     private String industryName;
     private String userName;
+    private String userAvatar;
 
     //The firebase objects for storage and database
     private StorageReference mStorageReference;
     private DatabaseReference mDatabase;
     private FirebaseAuth firebaseAuth;
     private Uri selectedFileIntent;
+    private Uri bookThumb;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,14 +98,14 @@ public class AddPostActivity extends AppCompatActivity implements View.OnClickLi
         if (intent.hasExtra("KEY_INDUSTRY") && intent.hasExtra("KEY_USERNAME")) {
             industryName = intent.getStringExtra("KEY_INDUSTRY");
             userName = intent.getStringExtra("KEY_USERNAME");
-
-
+            userAvatar = intent.getStringExtra("KEY_USER_AVATAR");
         }
     }
 
 
     private void initView() {
 
+//        textViewStatus = findViewById(R.id.activity_add_post_upload_file_status_tv);
         postTitleEd = findViewById(R.id.activity_add_post_title_ed);
         postDescriptionEd = findViewById(R.id.activity_add_post_description_ed);
         postImageNameEd = findViewById(R.id.activity_send_notification_file_name_ed);
@@ -147,10 +159,71 @@ public class AddPostActivity extends AppCompatActivity implements View.OnClickLi
         } //creating an intent for file chooser
 
         Intent intent = new Intent();
-        intent.setType("image/*");
+        intent.setType("*/*");
+        String[] mimetypes = {"image/*", "application/pdf"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_PDF_CODE);
+        startActivityForResult(Intent.createChooser(intent, "Select File"), PICK_PDF_CODE);
     }
+
+    void generateImageFromPdf(Uri pdfUri) {
+        int pageNumber = 0;
+        PdfiumCore pdfiumCore = new PdfiumCore(this);
+        try {
+            //http://www.programcreek.com/java-api-examples/index.php?api=android.os.ParcelFileDescriptor
+            ParcelFileDescriptor fd = getContentResolver().openFileDescriptor(pdfUri, "r");
+            PdfDocument pdfDocument = pdfiumCore.newDocument(fd);
+            pdfiumCore.openPage(pdfDocument, pageNumber);
+            int width = pdfiumCore.getPageWidthPoint(pdfDocument, pageNumber);
+            int height = pdfiumCore.getPageHeightPoint(pdfDocument, pageNumber);
+            Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            pdfiumCore.renderPageBitmap(pdfDocument, bmp, pageNumber, 0, 0, width, height);
+            saveImage(bmp);
+            pdfiumCore.closeDocument(pdfDocument); // important!
+        } catch (Exception e) {
+            //todo with exception
+        }
+    }
+
+    public final static String FOLDER = Environment.getExternalStorageDirectory() + "/PDF";
+
+    private void saveImage(Bitmap bmp) {
+        Log.e("LOCATION", FOLDER);
+        FileOutputStream out = null;
+        try {
+            File folder = new File(FOLDER);
+            if (!folder.exists())
+                folder.mkdirs();
+            File file = new File(folder, random() + ".png");
+            out = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+
+            bookThumb = Uri.fromFile(file);
+//            uploadThumbFile(Uri.fromFile(file));
+
+        } catch (Exception e) {
+            //todo with exception
+        } finally {
+            try {
+                if (out != null)
+                    out.close();
+            } catch (Exception e) {
+                //todo with exception
+            }
+        }
+    }
+
+    @NonNull
+    public static String random() {
+        final String ALLOWED_CHARACTERS = "0123456789qwertyuiopasdfghjklzxcvbnm";
+
+        final Random random = new Random();
+        final StringBuilder sb = new StringBuilder(5);
+        for (int i = 0; i < 5; ++i)
+            sb.append(ALLOWED_CHARACTERS.charAt(random.nextInt(ALLOWED_CHARACTERS.length())));
+        return sb.toString();
+    }
+
 
     //this method is uploading the file
     //the code is same as the previous tutorial
@@ -158,55 +231,182 @@ public class AddPostActivity extends AppCompatActivity implements View.OnClickLi
     private void uploadFile(final Uri data) {
         postUploadProgressBar.setVisibility(View.VISIBLE);
 
-        final StorageReference sRef = FirebaseStorage.getInstance().getReference().child(AppConstant.FIREBASE_STORAGE_PATH + System.currentTimeMillis());
-        sRef.putFile(data)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @SuppressWarnings("VisibleForTests")
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        postUploadProgressBar.setVisibility(View.GONE);
-                        postUploadStatusTv.setText("File upload successfully");
-                        getContentResolver().getType(data);
+        ContentResolver cR = getContentResolver();
+        String mime = cR.getType(data);
 
-                        final String title = postTitleEd.getText().toString().trim();
-                        final String description = postDescriptionEd.getText().toString().trim();
-                        final String filename = postImageNameEd.getText().toString().trim();
-                        final String fileUrl = taskSnapshot.getDownloadUrl().toString();
-                        final String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        Toast.makeText(this, "" + mime, Toast.LENGTH_SHORT).show();
 
+        final String userNamePost = firebaseAuth.getCurrentUser().getEmail().replace("@gmail.com", "");
 
-                        AddPostModel addPostModel = new AddPostModel(title, description, filename, fileUrl, userName, industryName, date);
+        if (mime.equals("image/jpeg") || mime.equals("image/png")) {
 
-                        mDatabase.child(AppConstant.FIREBASE_TABLE_POSTS).child(mDatabase.push().getKey()).setValue(addPostModel, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                if (databaseError != null) {
-                                    Toast.makeText(AddPostActivity.this, databaseError.toString(), Toast.LENGTH_SHORT).show();
-                                } else {
-                                    sendFCMPush();
-                                    finish();
-                                }
+            Toast.makeText(this, "Image", Toast.LENGTH_SHORT).show();
+            final StorageReference sref = FirebaseStorage.getInstance().getReference().child(AppConstant.FIREBASE_STORAGE_PATH + System.currentTimeMillis());
+
+            sref.putFile(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    final String title = postTitleEd.getText().toString().trim();
+                    final String description = postDescriptionEd.getText().toString().trim();
+                    final String filename = postImageNameEd.getText().toString().trim();
+                    final String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
+                    AddPostModel addPostModel = new AddPostModel(title, description, filename, taskSnapshot.getDownloadUrl().toString(), taskSnapshot.getDownloadUrl().toString(), userNamePost, industryName, date, "", userAvatar);
+
+                    mDatabase.child(AppConstant.FIREBASE_TABLE_POSTS).child(mDatabase.push().getKey()).setValue(addPostModel, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            if (databaseError != null) {
+                                Toast.makeText(AddPostActivity.this, databaseError.toString(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                sendFCMPush();
+                                finish();
                             }
-                        });
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.e("UPLOAD", exception.getMessage());
+                    Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @SuppressWarnings("VisibleForTests")
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
 
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                })
-                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @SuppressWarnings("VisibleForTests")
-                    @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                    Log.e("TAG UPLOAD", taskSnapshot.getBytesTransferred() + "  " + progress + "====" + (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
+                    postUploadStatusTv.setText("" + progress + "% Uploading...");
+                }
+            });
 
-                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                        Log.e("TAG UPLOAD", taskSnapshot.getBytesTransferred() + "  " + progress + "====" + (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
-                        postUploadStatusTv.setText("" + progress + "% Uploading...");
-                    }
-                });
+
+        } else if (mime.equals("application/pdf")) {
+            Toast.makeText(this, "PDF FILE", Toast.LENGTH_SHORT).show();
+            generateImageFromPdf(data);
+            final StorageReference sref = FirebaseStorage.getInstance().getReference().child(AppConstant.FIREBASE_STORAGE_PATH + System.currentTimeMillis());
+
+            sref.putFile(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    final String fileUrl = taskSnapshot.getDownloadUrl().toString();
+
+                    final StorageReference sRefimg = FirebaseStorage.getInstance().getReference().child(AppConstant.FIREBASE_STORAGE_PATH + System.currentTimeMillis() + ".png");
+                    sRefimg.putFile(bookThumb).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot filethumb) {
+
+                            final String filethumburl = filethumb.getDownloadUrl().toString();
+
+                            final String title = postTitleEd.getText().toString().trim();
+                            final String description = postDescriptionEd.getText().toString().trim();
+                            final String filename = postImageNameEd.getText().toString().trim();
+                            final String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
+                            AddPostModel addPostModel = new AddPostModel(title, description, filename, fileUrl, filethumburl, userNamePost, industryName, date, "", userAvatar);
+
+                            mDatabase.child(AppConstant.FIREBASE_TABLE_POSTS).child(mDatabase.push().getKey()).setValue(addPostModel, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                    if (databaseError != null) {
+                                        Toast.makeText(AddPostActivity.this, databaseError.toString(), Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        sendFCMPush();
+                                        finish();
+                                    }
+                                }
+                            });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            Log.e("UPLOAD", exception.getMessage());
+                            Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @SuppressWarnings("VisibleForTests")
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                            Log.e("TAG UPLOAD", taskSnapshot.getBytesTransferred() + "  " + progress + "====" + (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
+                            postUploadStatusTv.setText("" + progress + "% Uploading...");
+                        }
+                    });
+
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.e("UPLOAD", exception.getMessage());
+                    Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @SuppressWarnings("VisibleForTests")
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+
+                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                    Log.e("TAG UPLOAD", taskSnapshot.getBytesTransferred() + "  " + progress + "====" + (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
+                    postUploadStatusTv.setText("" + progress + "% Uploading...");
+                }
+            });
+            ;
+        }
+
+
+//        final StorageReference sRef = FirebaseStorage.getInstance().getReference().child(AppConstant.FIREBASE_STORAGE_PATH + System.currentTimeMillis());
+//        sRef.putFile(data)
+//                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                    @SuppressWarnings("VisibleForTests")
+//                    @Override
+//                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                        postUploadProgressBar.setVisibility(View.GONE);
+//                        postUploadStatusTv.setText("File upload successfully");
+//                        getContentResolver().getType(data);
+//
+//                        final String title = postTitleEd.getText().toString().trim();
+//                        final String description = postDescriptionEd.getText().toString().trim();
+//                        final String filename = postImageNameEd.getText().toString().trim();
+//                        final String fileUrl = taskSnapshot.getDownloadUrl().toString();
+//                        final String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+//
+//
+//                        AddPostModel addPostModel = new AddPostModel(title, description, filename, fileUrl, userName, industryName, date);
+//
+//                        mDatabase.child(AppConstant.FIREBASE_TABLE_POSTS).child(mDatabase.push().getKey()).setValue(addPostModel, new DatabaseReference.CompletionListener() {
+//                            @Override
+//                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+//                                if (databaseError != null) {
+//                                    Toast.makeText(AddPostActivity.this, databaseError.toString(), Toast.LENGTH_SHORT).show();
+//                                } else {
+//                                    sendFCMPush();
+//                                    finish();
+//                                }
+//                            }
+//                        });
+//
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception exception) {
+//                        Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
+//                    }
+//                })
+//                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+//                    @SuppressWarnings("VisibleForTests")
+//                    @Override
+//                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+//
+//                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+//                        Log.e("TAG UPLOAD", taskSnapshot.getBytesTransferred() + "  " + progress + "====" + (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
+//                        postUploadStatusTv.setText("" + progress + "% Uploading...");
+//                    }
+//                });
 
     }
 
